@@ -39,6 +39,18 @@ class Index(Resource):
     def get(self):
         return {'upload_v1_url': 'http://localhost/v1/upload'}
 
+class UploadApiV1(Resource):
+
+    def get(self, _id):
+        query = Upload.get_one(Upload.id == _id)
+        if query:
+            result = {}
+            result['id'] = query.id
+            result['plateinfo'] = json.loads(query.plateinfo)
+            return result, 200, {'Cache-Control': 'public, max-age=60, s-maxage=60'}
+        else:
+            return {'message': 'Not Found'}, 404, {'Cache-Control': 'public, max-age=60, s-maxage=60'}
+
 
 class UploadListApiV1(Resource):
 
@@ -46,7 +58,7 @@ class UploadListApiV1(Resource):
         query = Upload.select().where(Upload.uploadflag == True).order_by(Upload.id.desc()).limit(10)
         result = []
         for i in query:
-            result.append({'id': i.id, 'info': json.loads(i.plateinfo)})
+            result.append({'id': i.id, 'plateinfo': json.loads(i.plateinfo)})
         return {'items': result}, 200
 
     @auth.login_required
@@ -60,4 +72,5 @@ class UploadListApiV1(Resource):
 
 api.add_resource(Index, '/')
 api.add_resource(UploadListApiV1, '/v1/upload')
+api.add_resource(UploadApiV1, '/v1/upload/<_id>')
 

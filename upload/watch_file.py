@@ -1,12 +1,14 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-import gl
+from app import app
+
 
 class MyHandler(FileSystemEventHandler):
     def on_created(self,event):
         if event.src_path[-4:] == '.ini':
-            gl.CREATEDQUE.put({'fresh': True, 'path': event.src_path, 'id': 0})
+            app.config['CREATEDQUE'].put({'fresh': True,
+                                          'path': event.src_path, 'id': 0})
     
     def on_deleted(self,event):
         pass
@@ -16,6 +18,7 @@ class MyHandler(FileSystemEventHandler):
 
     def on_moved(self,event):
         pass
+
 
 class WatchFile:
     def __init__(self, path):

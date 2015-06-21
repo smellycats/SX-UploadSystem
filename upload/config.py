@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import Queue
 
 
 class Config(object):
@@ -13,9 +14,13 @@ class Config(object):
     DATABASE = 'upload.db'
     # 文件路径
     BASEPATH = 'C:\SpreadData\ImageFile'
+    # 文件创建队列
+    CREATEDQUE = Queue.Queue()
+
 
 class Develop(Config):
     pass
+
 
 class Production(Config):
     DEBUG = False
